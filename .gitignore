@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtualenv
+venv/
+.venv/
+
+# Variables de entorno
+.env
+
+# VSCode
+.vscode/
+
+# Storage
+app/storage/books/*
+app/storage/audio/*
+
+# Mantener carpetas vacías
+!app/storage/books/.gitkeep
+!app/storage/audio/.gitkeep
+
+# Docker
+*.log

@@ -21,5 +21,7 @@ async def handle_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     await update.message.reply_text(
-        f"📥 Archivo recibido: {result}"
-    )
+    f"📥 Archivo recibido: {result['filename']}\n"
+    f"📄 Páginas: {result['pages']}\n"
+    f"📖 Caracteres extraídos: {result['text_length']}"
+)
