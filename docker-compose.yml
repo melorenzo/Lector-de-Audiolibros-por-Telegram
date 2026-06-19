@@ -1,0 +1,13 @@
+services:
+  audiobook-bot:
+    build: .
+    container_name: audiobook-bot
+
+    env_file:
+      - .env
+
+    volumes:
+      - ./app/storage/books:/app/app/storage/books
+      - ./app/storage/audio:/app/app/storage/audio
+
+    restart: unless-stopped
