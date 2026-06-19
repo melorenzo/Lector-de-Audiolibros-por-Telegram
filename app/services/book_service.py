@@ -16,6 +16,8 @@ async def save_book(document):
 
     await telegram_file.download_to_drive(destination)
 
-    print(f"📚 Libro guardado: {destination}")
+    print(
+    f"📚 Libro guardado | nombre={filename} | ruta={destination}"
+)
 
     return True, filename
