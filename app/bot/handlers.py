@@ -9,9 +9,7 @@ async def handle_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
     document = update.message.document
 
     if not document:
-        await update.message.reply_text(
-            "❌ No recibí un archivo."
-        )
+        await update.message.reply_text("❌ No recibí un archivo.")
         return
 
     success, result = await save_book(document)
@@ -21,7 +19,8 @@ async def handle_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     await update.message.reply_text(
-    f"📥 Archivo recibido: {result['filename']}\n"
-    f"📄 Páginas: {result['pages']}\n"
-    f"📖 Caracteres extraídos: {result['text_length']}"
-)
+        f"📥 Archivo recibido: {result['filename']}\n"
+        f"📄 Páginas: {result['pages']}\n"
+        f"📖 Texto: {result['text_length']}\n"
+        f"🎧 Audios (chunks): {result['chunks']}"
+    )
