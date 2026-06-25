@@ -6,6 +6,10 @@ services:
     env_file:
       - .env
 
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+
     volumes:
       - ./app/storage/books:/app/app/storage/books
       - ./app/storage/audio:/app/app/storage/audio
