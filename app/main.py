@@ -11,6 +11,8 @@ from telegram.ext import (
 
 from bot.commands import start, next_chunk, status
 from bot.handlers import handle_file, handle_replace_callback
+from models.database import init_db
+from services.job_manager import load_jobs
 
 TOKEN = os.getenv(
     "TELEGRAM_TOKEN"
@@ -23,6 +25,9 @@ logging.basicConfig(
 
 
 def main():
+
+    init_db()
+    load_jobs()
 
     app = (
         Application.builder()

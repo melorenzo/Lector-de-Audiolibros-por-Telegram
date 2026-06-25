@@ -1,6 +1,7 @@
 import logging
 
 from services.audio_service import generate_audio_from_chunk
+from services.job_manager import update_job
 
 logger = logging.getLogger(__name__)
 
@@ -50,8 +51,10 @@ async def process_job(job, bot, chat_id):
                     )
 
         job.current_chunk += 1
+        update_job(job)
 
     job.finished = True
+    update_job(job)
 
     logger.info(
         f"🏁 Trabajo terminado {job.filename}"

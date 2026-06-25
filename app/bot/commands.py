@@ -4,7 +4,7 @@ import logging
 from telegram import Update
 from telegram.ext import ContextTypes
 
-from services.job_manager import get_job
+from services.job_manager import get_job, update_job
 
 logger = logging.getLogger(__name__)
 
@@ -107,6 +107,7 @@ async def next_chunk(
             )
 
     job.sent_up_to = batch_end + 1
+    update_job(job)
 
     if sent > 0:
 
