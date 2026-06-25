@@ -4,29 +4,40 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+MIN_DOCUMENT_CHARS = 500
+
 
 def extract_text(epub_path):
 
     book = epub.read_epub(epub_path)
 
-    text = ""
+    chapters = []
 
     for item in book.get_items():
 
-        if item.get_type() == 9:
+        if item.get_type() != 9:
+            continue
 
-            soup = BeautifulSoup(
-                item.get_content(),
-                "html.parser"
-            )
+        soup = BeautifulSoup(
+            item.get_content(),
+            "html.parser"
+        )
 
-            text += soup.get_text(separator=" ")
+        text = soup.get_text(separator=" ").strip()
+
+        if len(text) < MIN_DOCUMENT_CHARS:
+            continue
+
+        chapters.append({
+            "name": item.get_name(),
+            "content": text
+        })
 
     logger.info(
-        f"📝 EPUB caracteres extraídos: {len(text)}"
+        f"📖 EPUB documentos extraídos: {len(chapters)}"
     )
 
     return {
-        "text": text,
+        "chapters": chapters,
         "pages": 0
     }

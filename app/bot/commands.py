@@ -91,13 +91,21 @@ async def next_chunk(
         if not audio_path:
             continue
 
+        chunk_data = job.chunks[i]
+        chapter_info = (
+            f" 📖 {chunk_data.get('chapter', '')}"
+            if chunk_data.get("chapter")
+            else ""
+        )
+
         try:
             await context.bot.send_audio(
                 chat_id=chat_id,
                 audio=open(audio_path, "rb"),
                 caption=(
-                    f"🎧 Fragmento {i + 1} de {total} "
-                    f"— {job.filename}"
+                    f"🎧 Fragmento {i + 1} de {total}"
+                    f"{chapter_info}"
+                    f" — {job.filename}"
                 )
             )
             sent += 1

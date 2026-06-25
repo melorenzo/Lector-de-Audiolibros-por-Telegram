@@ -32,13 +32,20 @@ async def process_job(job, bot, chat_id):
 
             if chunk["index"] == 0:
 
+                chapter_info = (
+                    f" 📖 {chunk.get('chapter', '')}"
+                    if chunk.get("chapter")
+                    else ""
+                )
+
                 try:
                     await bot.send_audio(
                         chat_id=chat_id,
                         audio=open(audio_path, "rb"),
                         caption=(
-                            f"🎧 Fragmento 1 de {len(job.chunks)} "
-                            f"— {job.filename}\n\n"
+                            f"🎧 Fragmento 1 de {len(job.chunks)}"
+                            f"{chapter_info}"
+                            f" — {job.filename}\n\n"
                             "Usa /next para recibir más "
                             "(hasta 10 por vez)."
                         )

@@ -3,11 +3,47 @@ import logging
 
 from parsers.pdf_parser import extract_text as extract_pdf_text
 from parsers.epub_parser import extract_text as extract_epub_text
-from parsers.chunk_builder import build_chunks_from_text
+from parsers.chunk_builder import (
+    build_chunks_from_text,
+    build_chunks_from_chapters
+)
+from parsers.chapter_parser import detect_chapters
 
 from services.job_manager import create_job
 
 logger = logging.getLogger(__name__)
+
+CHARS_PER_CHUNK = 20000
+
+
+def _chunk_from_epub_chapters(epub_chapters):
+
+    chunks = []
+
+    for chap in epub_chapters:
+
+        text = chap["content"]
+
+        for i in range(0, len(text), CHARS_PER_CHUNK):
+
+            sub = text[i:i + CHARS_PER_CHUNK]
+
+            chapter_label = chap["name"].replace(
+                "Text/", ""
+            ).replace(".xhtml", "")
+
+            if len(text) > CHARS_PER_CHUNK:
+
+                part = i // CHARS_PER_CHUNK + 1
+                chapter_label = f"{chapter_label} (parte {part})"
+
+            chunks.append({
+                "index": len(chunks) + 1,
+                "content": sub,
+                "chapter": chapter_label
+            })
+
+    return chunks
 
 
 async def save_book(document, chat_id):
@@ -35,7 +71,6 @@ async def save_book(document, chat_id):
         f"📚 Libro guardado | nombre={filename}"
     )
 
-    text = ""
     pages = 0
 
     if filename.lower().endswith(".pdf"):
@@ -45,18 +80,32 @@ async def save_book(document, chat_id):
         text = pdf_data["text"]
         pages = pdf_data["pages"]
 
-    elif filename.lower().endswith(".epub"):
+        boundaries = detect_chapters(text)
+
+        if boundaries:
+
+            chunks = build_chunks_from_chapters(
+                text, boundaries
+            )
+
+        else:
+
+            chunks = build_chunks_from_text(text)
+
+        text_length = len(text)
+
+    else:
 
         epub_data = extract_epub_text(destination)
 
-        text = epub_data["text"]
+        epub_chapters = epub_data["chapters"]
         pages = epub_data["pages"]
 
-    logger.info(
-        f"📖 Texto extraído | paginas={pages}"
-    )
+        chunks = _chunk_from_epub_chapters(epub_chapters)
 
-    chunks = build_chunks_from_text(text)
+        text_length = sum(
+            len(c["content"]) for c in epub_chapters
+        )
 
     logger.info(
         f"🎧 Chunks generados | cantidad={len(chunks)}"
@@ -74,7 +123,7 @@ async def save_book(document, chat_id):
     return True, {
         "filename": filename,
         "pages": pages,
-        "text_length": len(text),
+        "text_length": text_length,
         "chunks": len(chunks),
         "job": job
     }
