@@ -9,7 +9,7 @@ class KokoroEngine:
     Motor TTS (backend actual: edge-tts).
     """
 
-    def __init__(self, voice="es-ES-AlvaroNeural"):
+    def __init__(self, voice="es-MX-JorgeNeural"):
         self.voice = voice
 
     async def synthesize(self, text: str, output_path: str):

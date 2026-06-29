@@ -73,6 +73,8 @@ async def save_book(document, chat_id):
 
     pages = 0
 
+    chapter_info = ""
+
     if filename.lower().endswith(".pdf"):
 
         pdf_data = extract_pdf_text(destination)
@@ -84,11 +86,15 @@ async def save_book(document, chat_id):
 
         if boundaries:
 
+            chapter_info = f"📖 Capítulos: {len(boundaries)}"
+
             chunks = build_chunks_from_chapters(
                 text, boundaries
             )
 
         else:
+
+            chapter_info = "📖 Capítulos: sin detectar"
 
             chunks = build_chunks_from_text(text)
 
@@ -100,6 +106,8 @@ async def save_book(document, chat_id):
 
         epub_chapters = epub_data["chapters"]
         pages = epub_data["pages"]
+
+        chapter_info = f"📖 Capítulos: {len(epub_chapters)}"
 
         chunks = _chunk_from_epub_chapters(epub_chapters)
 
@@ -125,5 +133,6 @@ async def save_book(document, chat_id):
         "pages": pages,
         "text_length": text_length,
         "chunks": len(chunks),
+        "chapters": chapter_info,
         "job": job
     }

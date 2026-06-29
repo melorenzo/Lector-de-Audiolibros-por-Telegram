@@ -71,6 +71,7 @@ async def handle_file(
         f"📥 Archivo recibido: {result['filename']}\n"
         f"📄 Páginas: {result['pages']}\n"
         f"📖 Caracteres: {result['text_length']}\n"
+        f"{result['chapters']}\n"
         f"🎧 Chunks: {result['chunks']}\n"
         f"🚀 Comenzando generación..."
 
@@ -127,6 +128,7 @@ async def handle_replace_callback(
             f"📥 Nuevo libro: {result['filename']}\n"
             f"📄 Páginas: {result['pages']}\n"
             f"📖 Caracteres: {result['text_length']}\n"
+            f"{result['chapters']}\n"
             f"🎧 Chunks: {result['chunks']}\n"
             f"🚀 Comenzando generación..."
         )
